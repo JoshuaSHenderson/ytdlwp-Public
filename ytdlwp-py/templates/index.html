@@ -17,13 +17,11 @@
         .container {
             max-width: 600px;
             margin: 50px auto;
-            /* Center the container horizontally */
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-align: center;
-            /* Center the button inside the container */
         }
 
         h1 {
@@ -89,7 +87,6 @@
             width: 100%;
             height: 10px;
             background-color: #007bff;
-            /* Change color as needed */
             position: relative;
         }
 
@@ -100,7 +97,6 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.1);
-            /* Change color as needed */
             animation: loading 2s infinite;
         }
 
@@ -116,7 +112,6 @@
 
         #downloadButton {
             background-color: #007bff;
-            /* Primary button color */
             color: white;
             padding: 10px 20px;
             border: none;
@@ -128,7 +123,6 @@
 
         #downloadButton:hover {
             background-color: #0056b3;
-            /* Darker shade on hover */
         }
 
         .loader {
@@ -176,7 +170,6 @@
                 <span id="buttonLoader" class="loader"></span>
             </button>
             <br>
-
             <br>
             <div id="loadingBar" class="loading-bar"></div>
         </form>
@@ -186,69 +179,42 @@
     <script>
         function submitForm() {
             var form = document.getElementById('downloadForm');
+            var input = document.getElementById("command");
+            var inputValue = input.value;
             var formData = new FormData(form);
 
-            // Disable the download button
             var downloadButton = document.getElementById('downloadButton');
             downloadButton.disabled = true;
 
-            // Show loading bar
             var loadingBar = document.getElementById('loadingBar');
             loadingBar.style.display = 'block';
 
-            // Sending the form data via AJAX
+            var url = "http://192.168.20.8:5011/download?url=" + inputValue;
+
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/runcmd', true);
+            xhr.open('GET', url);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
             xhr.onload = function () {
                 if (xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
                     if (response.success) {
                         document.getElementById('outputContainer').innerHTML = '<h1 style="color:green;">Success</h1><br><pre>' + response.output + '</pre>';
-                        // document.getElementById('outputContainer').innerHTML = '<pre>' + response.output + '</pre>';
                     } else {
                         alert('Failed to execute command: ' + response.error);
                     }
                 } else {
                     alert('Request failed. Status: ' + xhr.status);
                 }
-                // Reset the button and loading bar
                 downloadButton.disabled = false;
                 loadingBar.style.display = 'none';
             };
             xhr.onerror = function () {
                 alert('Request failed');
-                // Reset the button and loading bar
                 downloadButton.disabled = false;
                 loadingBar.style.display = 'none';
             };
             xhr.send(new URLSearchParams(formData));
         }
-        // function submitForm() {
-        //     var form = document.getElementById('downloadForm');
-        //     var formData = new FormData(form);
-
-        //     // Sending the form data via AJAX
-        //     var xhr = new XMLHttpRequest();
-        //     xhr.open('POST', '/runcmd', true);
-        //     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-        //     xhr.onload = function () {
-        //         if (xhr.status === 200) {
-        //             var response = JSON.parse(xhr.responseText);
-        //             if (response.success) {
-        //                 document.getElementById('outputContainer').innerHTML = '<h1 style="color:green;">Success</h1><br><pre>' + response.output + '</pre>';
-        //             } else {
-        //                 alert('Failed to execute command: ' + response.error);
-        //             }
-        //         } else {
-        //             alert('Request failed. Status: ' + xhr.status);
-        //         }
-        //     };
-        //     xhr.onerror = function () {
-        //         alert('Request failed');
-        //     };
-        //     xhr.send(new URLSearchParams(formData));
-        // }
     </script>
 </body>
 
